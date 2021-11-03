@@ -7,6 +7,8 @@ import joblib
 import torch
 import torch.nn as nn
 import transformers
+from model import BERTBaseUncased
+from dataset import BERTDataset
 from sklearn import metrics, model_selection, preprocessing
 from transformers import AdamW, get_linear_schedule_with_warmup
 from sklearn.metrics import f1_score
@@ -181,4 +183,3 @@ class TrainModel():
         modelAction.load(os.path.join(self.output_dir, "models", "ModelForaction.bin"))
         modelObject.load(os.path.join(self.output_dir, "models", "ModelForobject.bin"))
         modelLocation.load(os.path.join(self.output_dir, "models", "ModelForlocation.bin"))
-
