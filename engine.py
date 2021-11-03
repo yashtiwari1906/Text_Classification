@@ -163,7 +163,7 @@ class TrainModel():
         print()
         print("="*150)
         for text, action, object, location in zip(random.sample(texts, 20), random.sample(actions, 20), random.sample(objects, 20), random.sample(locations, 20)):
-            print("{}".format(text)+" "*(60-len(text))+"||"+" "*5 + "{}".format(action)+" "*(10-len(action))+"||"+" "*5 + "{}".format(object)+" "*(10-len(object))+"||"+" "*5, "{}".format(location)+" "*(10-len(location))+"||")
+            print("{}".format(text)+" "*(60-len(text))+"||"+" "*5 + "{}".format(action)+" "*(20-len(action))+"||"+" "*5 + "{}".format(object)+" "*(10-len(object))+"||"+" "*5, "{}".format(location)+" "*(10-len(location))+"||")
             print("-"*150)
         print("="*150)
         #print(len(actions), len(objects), len(locations), len(texts))
@@ -171,7 +171,7 @@ class TrainModel():
 
 
     def inference_on_single_text(self, text):
-        #tried to implement some approaches but they got failed anyways this part will be counted in the part which I have not done :(
+        #tried some of the approaches but they didn't worked :(
         modelAction = BERTBaseUncased(
             num_train_steps=n_train_steps, num_classes=self.dfx["action"].nunique()
         )
