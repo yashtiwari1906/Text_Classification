@@ -18,14 +18,14 @@ def open_config(file):
     return config
 
 class TrainModel():
-    def __init__(self):
-        path = "/content/drive/MyDrive/task_data/train_data.csv"
-        #config = open_config(args["config"])
-        self.output_dir = ""#args["output_dir"]
-        self.batch_size, self.epochs, path = 32, 1, path#config["batch_size"], config["epochs"], config["path"]
+    def __init__(self, args):
+        #path = "/content/drive/MyDrive/task_data/train_data.csv"
+        config = open_config(args["config"])
+        self.output_dir = args["output_dir"]
+        self.batch_size, self.epochs, path = config["batch_size"], config["epochs"], config["path"]
         self.dfx = pd.read_csv(path)
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        print("Running on {}........".format('cuda'))
+        self.device = args["device"] if torch.cuda.is_available() else "cpu"
+        print("Running on {}........".format(args["device"]))
 
 
     def begin(self, col):
