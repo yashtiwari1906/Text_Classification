@@ -31,9 +31,9 @@ if __name__ == "__main__":
         print("Training Completed!!!")
     
     elif args["task"] == "test":
-        assert args["output_dir"] is not None, "Please provide a checkpoint to load using --load to check test performance"
+        #assert args["output_dir"] is not None, "Please provide a checkpoint to load using --load to check test performance"
         test = TrainModel(args)
-        test.get_test_performance(args)
+        test.get_test_performance()
 
 
     elif args["task"] == "single_test":
