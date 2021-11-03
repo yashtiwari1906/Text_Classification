@@ -1,0 +1,7 @@
+epochs: 1
+path: "/content/drive/MyDrive/task_data/test_data.csv"
+batch_size: 32
+device: "cuda"
+output_dir: "/content/Text_Classification/output"
+load: ""
+
