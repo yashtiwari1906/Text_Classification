@@ -12,6 +12,7 @@ from dataset import BERTDataset
 from sklearn import metrics, model_selection, preprocessing
 from transformers import AdamW, get_linear_schedule_with_warmup
 from sklearn.metrics import f1_score
+import random
 
 def open_config(file):
     ''' Opens a configuration file '''
@@ -66,7 +67,7 @@ class TrainModel():
         # model.load("model.bin")
         #logdir = os.path.join("logs", datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
         #tensorboard_callback = tf.keras.callbacks.TensorBoard(logdir, histogram_freq=1)
-        self.tb_logger = tez.callbacks.TensorBoardLogger(log_dir="./logs/")
+        self.tb_logger = tez.callbacks.TensorBoardLogger(log_dir="/content/logs/")
         self.es = tez.callbacks.EarlyStopping(monitor="valid_loss", model_path=os.path.join(self.output_dir, "models", "ModelFor"+str(col)+".bin"))
         
         model.fit(
@@ -161,7 +162,7 @@ class TrainModel():
         
         print()
         print("="*150)
-        for text, action, object, location in zip(texts[:10], actions[:10], objects[:10], locations[:10]):
+        for text, action, object, location in zip(random.sample(texts, 20), random.sample(actions, 20), random.sample(objects, 20), random.sample(locations, 20)):
             print("{}".format(text)+" "*(60-len(text))+"||"+" "*5 + "{}".format(action)+" "*(10-len(action))+"||"+" "*5 + "{}".format(object)+" "*(10-len(object))+"||"+" "*5, "{}".format(location)+" "*(10-len(location))+"||")
             print("-"*150)
         print("="*150)
@@ -170,7 +171,7 @@ class TrainModel():
 
 
     def inference_on_single_text(self, text):
-        
+        #tried to implement some approaches but they got failed anyways this part will be counted in the part which I have not done :(
         modelAction = BERTBaseUncased(
             num_train_steps=n_train_steps, num_classes=self.dfx["action"].nunique()
         )
