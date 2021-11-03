@@ -7,8 +7,6 @@ import joblib
 import torch
 import torch.nn as nn
 import transformers
-from model import BERTBaseUncased
-from dataset import BERTDataset
 from sklearn import metrics, model_selection, preprocessing
 from transformers import AdamW, get_linear_schedule_with_warmup
 from sklearn.metrics import f1_score
@@ -20,14 +18,14 @@ def open_config(file):
     return config
 
 class TrainModel():
-    def __init__(self, args):
-        #path = "/content/drive/MyDrive/task_data/train_data.csv"
-        config = open_config(args["config"])
-        self.output_dir = args["output_dir"]
-        self.batch_size, self.epochs, path = config["batch_size"], config["epochs"], config["path"]
+    def __init__(self):
+        path = "/content/drive/MyDrive/task_data/train_data.csv"
+        #config = open_config(args["config"])
+        self.output_dir = ""#args["output_dir"]
+        self.batch_size, self.epochs, path = 32, 1, path#config["batch_size"], config["epochs"], config["path"]
         self.dfx = pd.read_csv(path)
-        self.device = args["device"] if torch.cuda.is_available() else "cpu"
-        print("Running on {}........".format(self.device))
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        print("Running on {}........".format('cuda'))
 
 
     def begin(self, col):
@@ -80,10 +78,10 @@ class TrainModel():
         )
         model.save(os.path.join(self.output_dir, "models", "ModelFor"+str(col)+".bin"))
         
-    def calculate_f1_score(action_ref, action_pred, object_ref, object_pred, location_ref, location_pred):
-        score_action = f1_score(action_ref, action_pred)
-        score_object = f1_score(object_ref, object_pred)
-        score_location = f1_score(location_ref, location_pred)
+    def calculate_f1_score(self, action_ref, action_pred, object_ref, object_pred, location_ref, location_pred):
+        score_action = f1_score(action_ref, action_pred, average = "micro")
+        score_object = f1_score(object_ref, object_pred, average = "macro")
+        score_location = f1_score(location_ref, location_pred, average = "weighted")
         print("=========================================================")
         print("F1 Score for the Action is {}".format(score_action))
         print("F1 Score for the Object is {}".format(score_object))
@@ -94,8 +92,8 @@ class TrainModel():
       
         meta_data = joblib.load(os.path.join(self.output_dir, "meta_data" , "lbl_enc_" +"action"+ ".bin"))
         lbl_enc = meta_data["lbl_enc_action"]
-        if test_file not None:
-            self.dfx = pd.read_csv(test_file)
+        #if test_file not None:
+        self.dfx = pd.read_csv(test_file)
         self.dfx["action"] = lbl_enc.fit_transform(self.dfx["action"].values)
         meta_data = joblib.load(os.path.join(self.output_dir, "meta_data" , "lbl_enc_" +"object"+ ".bin"))
         lbl_enc = meta_data["lbl_enc_object"]
@@ -166,7 +164,7 @@ class TrainModel():
             print("-"*150)
         print("="*150)
         #print(len(actions), len(objects), len(locations), len(texts))
-        self.calculate_f1_score(self.df_valid.values, f1_action, self.df_valid.object, f1_object, self.df_val.location, f1_location)
+        self.calculate_f1_score(list(self.df_valid.action.values), f1_action, list(self.df_valid.object.values), f1_object, list(self.df_valid.location.values), f1_location)
 
 
     def inference_on_single_text(self, text):
