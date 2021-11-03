@@ -23,11 +23,11 @@ class TrainModel():
     def __init__(self, args):
         #path = "/content/drive/MyDrive/task_data/train_data.csv"
         config = open_config(args["config"])
-        self.output_dir = args["output_dir"]
-        self.batch_size, self.epochs, path = config["batch_size"], config["epochs"], config["path"]
-        self.dfx = pd.read_csv(path)
-        self.device = args["device"] if torch.cuda.is_available() else "cpu"
-        print("Running on {}........".format(args["device"]))
+        self.output_dir = config["output_dir"]
+        self.batch_size, self.epochs, self.path = config["batch_size"], config["epochs"], config["path"]
+        self.dfx = pd.read_csv(self.path)
+        self.device = config["device"] if torch.cuda.is_available() else "cpu"
+        print("Running on {}........".format(config["device"]))
 
 
     def begin(self, col):
@@ -90,12 +90,12 @@ class TrainModel():
         print("F1 Score for the Location is {}".format(score_location))
         print("=========================================================")
     
-    def get_test_performance(self, test_file = None):
+    def get_test_performance(self):
       
         meta_data = joblib.load(os.path.join(self.output_dir, "meta_data" , "lbl_enc_" +"action"+ ".bin"))
         lbl_enc = meta_data["lbl_enc_action"]
         #if test_file not None:
-        self.dfx = pd.read_csv(test_file)
+        self.dfx = pd.read_csv(self.path)
         self.dfx["action"] = lbl_enc.fit_transform(self.dfx["action"].values)
         meta_data = joblib.load(os.path.join(self.output_dir, "meta_data" , "lbl_enc_" +"object"+ ".bin"))
         lbl_enc = meta_data["lbl_enc_object"]
